@@ -1,0 +1,126 @@
+serviceMaps:
+  serviceName: boundary-Service
+  mappings:
+  - version: 1.0
+    description: Persists the boundary entity data
+    fromTopic: liberia-create-boundary-entity
+    isTransaction: true
+    queryMaps:
+    - query: INSERT INTO liberia.boundary (id, tenantId, code, geometry, additionalDetails,
+        createdBy, lastModifiedBy, createdTime, lastModifiedTime) VALUES (?, ?, ?,
+        ?, ?, ?, ?, ?, ?);
+      basePath: $.Boundary.*
+      jsonMaps:
+      - jsonPath: $.Boundary.*.id
+      - jsonPath: $.Boundary.*.tenantId
+      - jsonPath: $.Boundary.*.code
+      - jsonPath: $.Boundary.*.geometry
+        type: JSON
+        dbType: JSONB
+      - jsonPath: $.Boundary.*.additionalDetails
+        type: JSON
+        dbType: JSONB
+      - jsonPath: $.Boundary.*.auditDetails.createdBy
+      - jsonPath: $.Boundary.*.auditDetails.lastModifiedBy
+      - jsonPath: $.Boundary.*.auditDetails.createdTime
+      - jsonPath: $.Boundary.*.auditDetails.lastModifiedTime
+  - version: 1.0
+    description: Persists the boundary entity data
+    fromTopic: liberia-update-boundary-entity
+    isTransaction: true
+    queryMaps:
+    - query: UPDATE liberia.boundary SET geometry = ? , lastModifiedBy = ? , lastModifiedTime
+        = ? WHERE code = ? AND tenantId = ?;
+      basePath: $.Boundary.*
+      jsonMaps:
+      - jsonPath: $.Boundary.*.geometry
+        type: JSON
+        dbType: JSONB
+      - jsonPath: $.Boundary.*.auditDetails.lastModifiedBy
+      - jsonPath: $.Boundary.*.auditDetails.lastModifiedTime
+      - jsonPath: $.Boundary.*.code
+      - jsonPath: $.Boundary.*.tenantId
+  - version: 1.0
+    description: Persists the boundary hierarchy definition data
+    fromTopic: liberia-save-boundary-hierarchy-definition
+    isTransaction: true
+    queryMaps:
+    - query: INSERT INTO liberia.boundary_hierarchy (id, tenantId, hierarchyType, boundaryHierarchy,
+        createdTime, createdBy, lastModifiedTime, lastModifiedBy) VALUES (?, ?, ?,
+        ?, ?, ?, ?, ?);
+      basePath: $.BoundaryHierarchy
+      jsonMaps:
+      - jsonPath: $.BoundaryHierarchy.id
+      - jsonPath: $.BoundaryHierarchy.tenantId
+      - jsonPath: $.BoundaryHierarchy.hierarchyType
+      - jsonPath: $.BoundaryHierarchy.boundaryHierarchyJsonNode
+        type: JSON
+        dbType: JSONB
+      - jsonPath: $.BoundaryHierarchy.auditDetails.createdTime
+      - jsonPath: $.BoundaryHierarchy.auditDetails.createdBy
+      - jsonPath: $.BoundaryHierarchy.auditDetails.lastModifiedTime
+      - jsonPath: $.BoundaryHierarchy.auditDetails.lastModifiedBy
+  - version: 1.0
+    description: Persists the boundary relationship data
+    fromTopic: liberia-save-boundary-relationship
+    isTransaction: true
+    queryMaps:
+    - query: INSERT INTO liberia.boundary_relationship (id, tenantId, code, hierarchyType,
+        boundaryType, parent, ancestralMaterializedPath, createdTime, createdBy, lastModifiedTime,
+        lastModifiedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      basePath: $.BoundaryRelationship
+      jsonMaps:
+      - jsonPath: $.BoundaryRelationship.id
+      - jsonPath: $.BoundaryRelationship.tenantId
+      - jsonPath: $.BoundaryRelationship.code
+      - jsonPath: $.BoundaryRelationship.hierarchyType
+      - jsonPath: $.BoundaryRelationship.boundaryType
+      - jsonPath: $.BoundaryRelationship.parent
+      - jsonPath: $.BoundaryRelationship.ancestralMaterializedPath
+      - jsonPath: $.BoundaryRelationship.auditDetails.createdTime
+      - jsonPath: $.BoundaryRelationship.auditDetails.createdBy
+      - jsonPath: $.BoundaryRelationship.auditDetails.lastModifiedTime
+      - jsonPath: $.BoundaryRelationship.auditDetails.lastModifiedBy
+  - version: 1.0
+    description: Updates boundary relationship data
+    fromTopic: liberia-update-boundary-relationship
+    isTransaction: true
+    queryMaps:
+    - query: UPDATE liberia.boundary_relationship SET parent = ?, ancestralmaterializedpath
+        = ?, lastmodifiedtime = ?, lastmodifiedby = ? WHERE id = ?;
+      basePath: $.BoundaryRelationshipList.*
+      jsonMaps:
+      - jsonPath: $.BoundaryRelationshipList.*.parent
+      - jsonPath: $.BoundaryRelationshipList.*.ancestralMaterializedPath
+      - jsonPath: $.BoundaryRelationshipList.*.auditDetails.lastModifiedTime
+      - jsonPath: $.BoundaryRelationshipList.*.auditDetails.lastModifiedBy
+      - jsonPath: $.BoundaryRelationshipList.*.id
+  - version: 1.0
+    description: Persists boundary identifiers (POST /boundary-identifier/_create)
+    fromTopic: liberia-save-boundary-identifier
+    isTransaction: true
+    queryMaps:
+    - query: INSERT INTO liberia.boundary_identifier (id, tenantId, hierarchyType, code, identifierId, createdBy, lastModifiedBy, createdTime, lastModifiedTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING;
+      basePath: $.BoundaryIdentifier.*
+      jsonMaps:
+      - jsonPath: $.BoundaryIdentifier.*.id
+      - jsonPath: $.BoundaryIdentifier.*.tenantId
+      - jsonPath: $.BoundaryIdentifier.*.hierarchyType
+      - jsonPath: $.BoundaryIdentifier.*.code
+      - jsonPath: $.BoundaryIdentifier.*.identifierId
+      - jsonPath: $.BoundaryIdentifier.*.auditDetails.createdBy
+      - jsonPath: $.BoundaryIdentifier.*.auditDetails.lastModifiedBy
+      - jsonPath: $.BoundaryIdentifier.*.auditDetails.createdTime
+      - jsonPath: $.BoundaryIdentifier.*.auditDetails.lastModifiedTime
+  - version: 1.0
+    description: Updates the identifierId of boundary identifiers (POST /boundary-identifier/_update)
+    fromTopic: liberia-update-boundary-identifier
+    isTransaction: true
+    queryMaps:
+    - query: UPDATE liberia.boundary_identifier SET identifierId = ?, lastModifiedBy = ?, lastModifiedTime = ? WHERE id = ?;
+      basePath: $.BoundaryIdentifier.*
+      jsonMaps:
+      - jsonPath: $.BoundaryIdentifier.*.identifierId
+      - jsonPath: $.BoundaryIdentifier.*.auditDetails.lastModifiedBy
+      - jsonPath: $.BoundaryIdentifier.*.auditDetails.lastModifiedTime
+      - jsonPath: $.BoundaryIdentifier.*.id
